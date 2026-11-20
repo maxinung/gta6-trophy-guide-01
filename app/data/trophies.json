@@ -18,6 +18,7 @@
       "source": "gta6fieldguide.com/guides/gta-6-trophies-and-achievements",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Requires completing Bret's 15 Target Decks (hunting questline), which is Jason-only and unlocks in Chapter 2; source notes nothing on 100% checklist is missable but the questline must be finished.",
       "kind": "progress"
     },
     {
@@ -68,6 +69,7 @@
       "source": "powerpyx.com/gta-6-all-challenges-guide/",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Direct armored truck robberies can fail to trigger the trophy (glitched); source recommends the Chapter 4 vault job 'That's Where The Money Is...' as the surest method, but source also states robbery trophies are not missable as icons respawn.",
       "kind": "hidden"
     },
     {
@@ -78,6 +80,7 @@
       "source": "gamerstogether.cz/en/gta-6-trophies-achievements/",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Source (6Charts) states no missable trophies confirmed; map exploration is fully available in free roam after story and fog never returns once cleared.",
       "kind": "hidden"
     },
     {
@@ -128,6 +131,7 @@
       "source": "gta6fieldguide.com/trophies",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Source (Bloxodes) lists Missable: No for Top Fun; drone races are available at 14 locations anytime after unlock, no time limit or chapter restriction reported.",
       "kind": "hidden"
     },
     {
@@ -168,6 +172,7 @@
       "source": "gta.guide/gta-6/guides/trophies-and-achievements",
       "hidden": true,
       "missable": true,
+      "missable_reason": "Only potentially missable trophy: Lucia's balcony meditation at Jason's house in Chapter 1 (after Down to Earth, before Tourist Trap) is permanently unavailable after Chapter 1 ends; not confirmed if required for trophy but cannot be repeated.",
       "kind": "hidden"
     },
     {
@@ -278,6 +283,7 @@
       "source": "gamesradar.com/games/grand-theft-auto/gta-6-trophy-achievement-list/",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Source (PixelForgeGuides, 6Charts) states story trophy, impossible to miss; unlocks automatically after completing the first mission Gone Fishing in Chapter 1.",
       "kind": "hidden"
     },
     {
@@ -288,6 +294,7 @@
       "source": "gta.guide/gta-6/guides/trophies-and-achievements",
       "hidden": false,
       "missable": true,
+      "missable_reason": "Source (PixelForgeGuides, 6Charts) states story trophy, impossible to miss; unlocks automatically when Chapter 1 completes (after mission Discharge Time / start of Chapter 2).",
       "kind": "hidden"
     },
     {

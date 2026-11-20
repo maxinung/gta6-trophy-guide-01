@@ -97,7 +97,7 @@ function renderMissable() {
   missableTrophies.forEach((trophy, idx) => {
     const isEarned = earned[trophy.name] === true;
     const gradeColor = gradeToColor(trophy.grade);
-    const missableReason = trophy.missable ? 'Potentially missable: Chapter 1 balcony meditation with Lucia' : 'Hidden until earned';
+    const missableReason = trophy.missable ? (trophy.missable_reason || 'Potentially missable') : 'Hidden until earned';
     const displayText = spoilerEnabled || !trophy.hidden ? trophy.official : 'Hidden';
 
     html += `<tr>

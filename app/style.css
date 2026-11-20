@@ -100,32 +100,37 @@ section.tab-content.active {
 #checklist-table th {
   background: #1a1a1a;
   color: var(--muted);
-  padding: 0.8rem;
+  padding: 0.8rem 1rem;
   text-align: left;
   font-size: 0.75rem;
   text-transform: uppercase;
+  min-width: 100px;
 }
 
-#checklist-table td {
-  border-bottom: 1px solid #333;
-  padding: 0.8rem;
-}
-
-#checklist-table td:first-child {
-  font-weight: bold;
-  color: var(--accent);
-}
-
+/* Grade column (col 2) needs enough space */
 #checklist-table td:nth-child(2) {
   color: var(--fg);
+  min-width: 60px;
+  text-align: center;
 }
 
+/* Trophy name column (col 1) needs enough space */
+#checklist-table td:nth-child(1) {
+  font-weight: bold;
+  color: var(--accent);
+  min-width: 180px;
+}
+
+/* Description column (col 3) needs space without truncation */
 #checklist-table td:nth-child(3) {
   color: var(--gold);
   font-weight: bold;
   min-width: 60px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
+/* Note column (col 4) needs space */
 #checklist-table td:nth-child(4) {
   color: var(--muted);
   font-size: 0.75rem;
@@ -135,6 +140,7 @@ section.tab-content.active {
   overflow: hidden;
 }
 
+/* Progress column (col 5) */
 #checklist-table td:nth-child(5) {
   color: var(--muted);
   font-size: 0.7rem;
@@ -163,31 +169,35 @@ section.tab-content.active {
 #missable-table th {
   background: #1a1a1a;
   color: var(--muted);
-  padding: 0.8rem;
+  padding: 0.8rem 1rem;
   text-align: left;
   font-size: 0.75rem;
   text-transform: uppercase;
+  min-width: 100px;
 }
 
-#missable-table td {
-  border-bottom: 1px solid #333;
-  padding: 0.8rem;
-}
-
-#missable-table td:first-child {
+/* Trophy name column (col 1) needs enough space */
+#missable-table td:nth-child(1) {
   color: var(--accent);
   font-weight: bold;
+  min-width: 180px;
 }
 
+/* Grade column (col 2) needs enough space */
 #missable-table td:nth-child(2) {
   color: var(--gold);
   font-weight: bold;
   min-width: 50px;
+  text-align: center;
 }
 
+/* Missable reason column (col 3) needs space without truncation */
 #missable-table td:nth-child(3) {
   color: var(--fg);
   font-size: 0.85rem;
+  white-space: normal;
+  word-wrap: break-word;
+  min-width: 300px;
 }
 
 /* Progress */
