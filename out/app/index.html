@@ -1,78 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GTA 6 Trophy Guide</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTA VI Trophy Guide & Tracker</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>GTA 6 Trophy Guide</h1>
-    <div class="progress-bar">
+<header>
+  <h1>GTA VI Trophy Guide & Tracker</h1>
+  <div class="progress-wrap">
+    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div class="progress-fill" id="progressFill"></div>
-      <span class="progress-text" id="progressText">0 / 55 (0%)</span>
     </div>
-  </header>
+    <p id="progressText" class="progress-text">0 of 55 earned (0%)</p>
+  </div>
+</header>
 
-  <nav class="toolbar">
-    <div class="filter-group">
-      <label>Grade:</label>
-      <select id="gradeFilter">
-        <option value="all">All</option>
-        <option value="platinum">Platinum</option>
-        <option value="gold">Gold</option>
-        <option value="silver">Silver</option>
-        <option value="bronze">Bronze</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Type:</label>
-      <select id="typeFilter">
-        <option value="all">All</option>
-        <option value="story">Story</option>
-        <option value="side">Side</option>
-        <option value="collection">Collection</option>
-        <option value="stunt">Stunt</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>
-        <input type="checkbox" id="missableFilter"> Missable Only
-      </label>
-    </div>
-    <div class="filter-group">
-      <label>
-        <input type="checkbox" id="spoilerToggle" checked> Hide Story Spoilers
-      </label>
-    </div>
-    <div class="actions">
-      <button id="exportBtn" title="Export progress to JSON">Export</button>
-      <button id="importBtn" title="Import progress from JSON">Import</button>
-      <input type="file" id="importFile" accept=".json" style="display:none;">
-    </div>
-  </nav>
+<nav class="tabs" role="tablist" aria-label="Main views">
+  <button role="tab" id="tabChecklist" aria-selected="true" aria-controls="panelChecklist">Checklist</button>
+  <button role="tab" id="tabRoadmap" aria-selected="false" aria-controls="panelRoadmap">Roadmap</button>
+  <button role="tab" id="tabMissable" aria-selected="false" aria-controls="panelMissable">Missable</button>
+</nav>
 
-  <main class="main">
-    <section id="listView" class="view">
-      <ul id="trophyList" class="trophy-list"></ul>
-    </section>
+<div class="controls" role="search" aria-label="Filter trophies">
+  <label>Grade
+    <select id="filterGrade">
+      <option value="all">All</option>
+      <option value="platinum">Platinum</option>
+      <option value="gold">Gold</option>
+      <option value="silver">Silver</option>
+      <option value="bronze">Bronze</option>
+    </select>
+  </label>
+  <label>Type
+    <select id="filterType">
+      <option value="all">All</option>
+      <option value="story">Story</option>
+      <option value="activity">Activity</option>
+      <option value="collectible">Collectible</option>
+      <option value="completion">Completion</option>
+      <option value="platinum">Platinum</option>
+    </select>
+  </label>
+  <label class="checkbox-wrap">
+    <input type="checkbox" id="filterMissableOnly"> Missable only
+  </label>
+  <label class="checkbox-wrap">
+    <input type="checkbox" id="spoilerToggle" checked> Hide story spoilers
+  </label>
+  <button id="exportBtn" type="button">Export Progress</button>
+  <label class="import-wrap">Import Progress <input id="importFile" type="file" accept="application/json"></label>
+</div>
 
-    <section id="detailView" class="view hidden">
-      <button class="back-btn" id="backBtn">← Back to List</button>
-      <article id="trophyDetail" class="trophy-detail"></article>
-    </section>
+<div role="tabpanel" id="panelChecklist" aria-labelledby="tabChecklist" class="panel active">
+  <table id="trophyTable">
+    <thead>
+      <tr>
+        <th scope="col">Earned</th>
+        <th scope="col">Trophy</th>
+        <th scope="col">Grade</th>
+        <th scope="col">Type</th>
+        <th scope="col">Guide</th>
+      </tr>
+    </thead>
+    <tbody id="trophyRows"></tbody>
+  </table>
+</div>
 
-    <section id="roadmapView" class="view hidden">
-      <button class="back-btn" id="roadmapBackBtn">← Back to List</button>
-      <div id="roadmap" class="roadmap"></div>
-    </section>
-  </main>
+<div role="tabpanel" id="panelRoadmap" aria-labelledby="tabRoadmap" class="panel" hidden>
+  <section id="roadmapContent"></section>
+</div>
 
-  <footer class="footer">
-    <p>Data sourced from Exophase, GTABase, Insider Gaming, GTA6 Field Guide, Gamers Together, Push Square (Nov 2026)</p>
-  </footer>
+<div role="tabpanel" id="panelMissable" aria-labelledby="tabMissable" class="panel" hidden>
+  <section id="missableContent"></section>
+</div>
 
-  <script type="module" src="app.js"></script>
+<dialog id="detailDialog" class="detail-dialog">
+  <div class="dialog-content">
+    <button class="dialog-close" id="dialogClose" aria-label="Close details">&times;</button>
+    <div id="dialogBody"></div>
+  </div>
+</dialog>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
