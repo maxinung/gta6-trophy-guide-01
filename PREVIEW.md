@@ -79,6 +79,17 @@ node serve.ts  # http://localhost:8080
 - [x] Total dossier < 4 MB
 - [x] No Rockstar logos/artwork (compliance)
 
+## FASE 1b Fixes (2026-11-20)
+- **Spoiler hash param**: Added `#spoilers=off` support in app.js (getSpoilersOff()) — screenshots now show trophy names/descriptions instead of "???". Default product behavior unchanged (spoiler ON without hash).
+- **Header/filter overlap**: Fixed in styles.css — header & toolbar now have solid background (`var(--card)`) + proper z-index, eliminating text bleed-through on scroll.
+- **Detail truncation**: Screenshot 2-detail.png captured at 1280x1000 to fit full "How to Earn" content.
+- **Re-rendered 4 screenshots** with `#spoilers=off`:
+  - 1-list.png: Full list with trophy names visible (no "???")
+  - 2-detail.png: Platinum "Vice Got a Price!" detail, full How to Earn visible
+  - 3-roadmap.png: All 6 phases, trophy names visible, no header overlap
+  - 4-missable.png: Missable filter + spoilers off, 8 trophies with ⚠ badges visible
+- **Spot-check (5 vs Exophase)**: All match — Vice Got a Price! (platinum), Just Like Paradise & Paradise Lost (story), Road to Rehabilitation & This Was No Boat Accident (missable)
+
 ## Sources
 1. Exophase: https://exophase.com/game/grand-theft-auto-vi/
 2. GTABase: https://gtabase.com/guides/gta-6-trophies/

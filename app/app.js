@@ -71,11 +71,15 @@ function updateProgressUI() {
   document.getElementById('progressText').textContent = `${earned} / ${total} (${pct}%)`;
 }
 
+function getSpoilersOff() {
+  return window.location.hash.includes('spoilers=off');
+}
+
 function matchesFilters(trophy) {
   const gradeFilter = document.getElementById('gradeFilter').value;
   const typeFilter = document.getElementById('typeFilter').value;
   const missableOnly = document.getElementById('missableFilter').checked;
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
 
   if (gradeFilter !== 'all' && trophy.grade !== gradeFilter) return false;
   if (typeFilter !== 'all' && trophy.type !== typeFilter) return false;
@@ -85,7 +89,7 @@ function matchesFilters(trophy) {
 
 function renderList() {
   const list = document.getElementById('trophyList');
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
   const demoMode = window.location.hash === '#demo-progress';
   const currentProgress = demoMode ? demoProgress : progress;
 
@@ -128,7 +132,7 @@ function showDetail(id) {
   const demoMode = window.location.hash === '#demo-progress';
   const currentProgress = demoMode ? demoProgress : progress;
   const earned = currentProgress[trophy.id] === true;
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
 
   const detail = document.getElementById('trophyDetail');
   const nameDisplay = (hideSpoilers && trophy.hidden && !earned) ? '???' : trophy.name;
