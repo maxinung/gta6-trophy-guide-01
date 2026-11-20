@@ -50,31 +50,31 @@
     "Dark theme, responsive, system fonts only"
   ],
   "screenshots": [
-    {
-      "file": "screenshots/1-list.png",
-      "view": "Main trophy list (all 55, spoilers off, HTTP server)",
-      "size_kb": 62,
-      "hash": "sha256:3924389d2055841c1c6ab7dedd3d41a5f8f6ccf694115b3a2012fafe1e154df6"
-    },
-    {
-      "file": "screenshots/2-detail.png",
-      "view": "Platinum trophy 'Vice Got a Price!' detail (1280x1000, HTTP server, name visible)",
-      "size_kb": 68,
-      "hash": "sha256:2d1fa5d8d088077f0e1d3488fadd9d27683a3e93b421a26e4cfe8cf9656084a0"
-    },
-    {
-      "file": "screenshots/3-roadmap.png",
-      "view": "6-phase roadmap to platinum (spoilers off, from top, no header overlap, HTTP server)",
-      "size_kb": 70,
-      "hash": "sha256:307f9203dd29787fc3c7f62611c3ee9bbbd321b7261d0b8f111fccc38cb618d4"
-    },
-    {
-      "file": "screenshots/4-missable.png",
-      "view": "Missable-only filter (7 trophies, spoilers off, HTTP server)",
-      "size_kb": 68,
-      "hash": "sha256:284d46f6ef77f51c549308bd49e36589e8263b1c228c74031c048a875a49c878"
-    }
-  ],
+      {
+        "file": "screenshots/1-list.png",
+        "view": "Main trophy list (all 55, spoilers off)",
+        "size_kb": 62,
+        "hash": "sha256:3924389d2055841c1c6ab7dedd3d41a5f8f6ccf694115b3a2012fafe1e154df6"
+      },
+      {
+        "file": "screenshots/2-detail.png",
+        "view": "Platinum trophy 'Vice Got a Price!' detail (1280x1000)",
+        "size_kb": 33,
+        "hash": "sha256:9cf36d95b538ae11270d787c03b4d38602df96a524bbdca144469e38b6d1c514"
+      },
+      {
+        "file": "screenshots/3-roadmap.png",
+        "view": "6-phase roadmap to platinum (spoilers off, no header overlap)",
+        "size_kb": 32,
+        "hash": "sha256:02c43f9fe7cfd7eb97b1c643e886b612554b8002fafbb60dcaf647115b7e49f4"
+      },
+      {
+        "file": "screenshots/4-missable.png",
+        "view": "Missable-only filter (7 trophies, spoilers off)",
+        "size_kb": 68,
+        "hash": "sha256:284d46f6ef77f51c549308bd49e36589e8263b1c228c74031c048a875a49c878"
+      }
+    ],
   "fixes": {
     "fase1b": {
       "date": "2026-11-20",
