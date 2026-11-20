@@ -1,29 +1,23 @@
-# GTA VI Trophy Guide - PREVIEW
+# GTA VI Trophy Guide Preview
 
-## Statistics (from your trophies.json)
+- **Total trophies:** 55
+- **Platinum:** 1
+- **Gold:** 2
+- **Silver:** 6
+- **Bronze:** 46
+- **Hidden:** 31
+- **Missable:** 7
+- **Unique source URLs:** 23
+- **Source sample:** ['https://www.powerpyx.com/gta-6-grand-theft-auto-vi-trophy-guide-roadmap/', 'https://leonidawaypoint.com/guides/trophy-guide/', 'https://www.wikigtavi.com/achievements', 'https://gtabase.com/gta-6/stunts/', 'https://gta.wiki/w/Gunslinger']
 
-- **Total Trophies:** 55
+### Grade Distribution
 - **Platinum:** 1
 - **Gold:** 2
 - **Silver:** 6
 - **Bronze:** 46
 
-## Hidden & Missable
-
-- **Hidden:** 31
-- **Missable:** 7
-- **Both Hidden & Missable:** 1
-
-## Breakdown by Kind
-
-- activity: 16
-- final: 1
-- hidden: 31
-- progress: 1
-
-## Screenshot Hashes
-
-- 1-list.png: 4d045f651222ec9ab91c36c3f4287c4cf66b6830834bfc6f63b602dc45daa842
-- 2-detail.png: f79dfaa8f91aa885cc4c90871091d43b41be09c1696e32587cd63a72999ce7ca
-- 3-roadmap.png: eab3538862e96045ddb7c12b269085325a826f69dd505dc541eaba42453dbb95
-- 4-missable.png: 919366703e8b8fb13f505518386b960abd83073d443e2b734bdb69d91308e1ce
+### Screenshot Hashes (generated after build)
+- 1-list: abdce2c28db8413858ae741e146c0db911bf7de82394ecc3b5d1e45d99ad9ca0
+- 2-detail: 58e87f696d7a990bc3094d57f597d1d98ce8b87f864b26e3622d1f35dca28a4c
+- 3-roadmap: 313193a28fd0ad36aedee326e29ef3694b15b283167ee3d418f5b38da40d23b4
+- 4-missable: 7268992e64d18b39444c0b183004df02bcfd37f3683a364393bf92337c4447d0

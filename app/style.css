@@ -1,280 +1,41 @@
-/* GTA 6 Trophy Guide & Tracker - Styles */
-:root {
-  --bg: #0d0d0d;
-  --fg: #e0e0e0;
-  --muted: #666;
-  --accent: #ff6b35;
-  --gold: #ffd700;
-  --silver: #c0c0c0;
-  --bronze: #cd7f32;
-  --platinum: #ffd700;
-}
+body { font-family: Arial, sans-serif; margin: 24px; color: #222; background: #1a1a2e; }
+header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px; }
+h1 { font-size: 1.5rem; }
+#progress { font-size: 0.8rem; color: #666; }
+.controls { display: flex; gap: 16px; margin: 12px 0; align-items: flex-baseline; flex-wrap: view; }
+.controls label { font-size: 0.8rem; color: #555; }
+.controls select, .controls button { font-size: 0.8rem; padding: 4px 8px; }
+.import input { font-size: 12px; }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+th, td { border-bottom: 1px solid #444; padding: 8px 12px; text-align: left; vertical-align: top; white-space: pre-line; font-size: 0.75rem; }
+th { background: #2d2d38; color: #fff; text-align: left; }
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  line-height: 1.5;
-}
+/* COLUMN WIDHTS - prevent overlap */
+th.trophy, td.trophy { min-width: 200px; }
+th.grade, td.grade { min-width: 60px; text-align: center; }
+th.earned, td.earned { min-width: 50px; text-align: center; }
+th.guide, td.guide { min-width: 300px; }
 
-/* Header */
-header {
-  padding: 2rem;
-  text-align: center;
-  border-bottom: 1px solid #333;
-}
+/* Trophy names - truncate if needed */
+.trophy-name { display: block; }
+.trophy-name:hover { text-decoration: underline; }
 
-header h1 {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
+/* Spoiler note */
+.spoiler-note { font-size: 0.65rem; color: #888; margin-left: 4px; }
 
-header h1 span#platinum-badge {
-  color: var(--gold);
-  font-weight: bold;
-}
-
-header p {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* Navigation */
-nav {
-  padding: 0 2rem 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
-  padding: 0.8rem 1.5rem;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: var(--fg);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.tab-btn.active {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
-
-/* Main content */
-main {
-  padding: 0 2rem 2rem;
-}
-
-section.tab-content {
-  display: none;
-}
-
-section.tab-content.active {
-  display: block;
-}
-
-/* Checklist table */
-#checklist-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-#checklist-table th {
-  background: #1a1a1a;
-  color: var(--muted);
-  padding: 0.8rem 1rem;
-  text-align: left;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  min-width: 100px;
-}
-
-/* Grade column (col 2) needs enough space */
-#checklist-table td:nth-child(2) {
-  color: var(--fg);
-  min-width: 60px;
-  text-align: center;
-}
-
-/* Trophy name column (col 1) needs enough space */
-#checklist-table td:nth-child(1) {
-  font-weight: bold;
-  color: var(--accent);
-  min-width: 180px;
-}
-
-/* Description column (col 3) needs space without truncation */
-#checklist-table td:nth-child(3) {
-  color: var(--gold);
-  font-weight: bold;
-  min-width: 60px;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-/* Note column (col 4) needs space */
-#checklist-table td:nth-child(4) {
-  color: var(--muted);
-  font-size: 0.75rem;
-  max-width: 400px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-/* Progress column (col 5) */
-#checklist-table td:nth-child(5) {
-  color: var(--muted);
-  font-size: 0.7rem;
-  text-align: right;
-}
-
-/* Roadmap */
-#roadmap-steps {
-  list-style: none;
-  margin-top: 1rem;
-}
-
-#roadmap-steps li {
-  padding: 0.8rem 0;
-  border-bottom: 1px solid #333;
-  font-size: 0.9rem;
-}
-
-/* Missable table */
-#missable-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-#missable-table th {
-  background: #1a1a1a;
-  color: var(--muted);
-  padding: 0.8rem 1rem;
-  text-align: left;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  min-width: 100px;
-}
-
-/* Trophy name column (col 1) needs enough space */
-#missable-table td:nth-child(1) {
-  color: var(--accent);
-  font-weight: bold;
-  min-width: 180px;
-}
-
-/* Grade column (col 2) needs enough space */
-#missable-table td:nth-child(2) {
-  color: var(--gold);
-  font-weight: bold;
-  min-width: 50px;
-  text-align: center;
-}
-
-/* Missable reason column (col 3) needs space without truncation */
-#missable-table td:nth-child(3) {
-  color: var(--fg);
-  font-size: 0.85rem;
-  white-space: normal;
-  word-wrap: break-word;
-  min-width: 300px;
-}
-
-/* Progress */
-#progress-text {
-  color: var(--accent);
-  font-weight: bold;
-}
+/* View-specific */
+#rows tr { cursor: pointer; }
+#rows tr:hover { background: #2a2a3a; }
 
 /* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.9);
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-}
+dialog { border: none; border-radius: 8px; padding: 24px; background: #2d2d38; color: #fff; margin: 24px; }
+dialog h2 { margin-top: 0; font-size: 1.2rem; }
+.details { margin: 12px 0; font-size: 0.85rem; }
+details + details { margin-top: 8px; }
+dialog button { margin-top: 16px; padding: 8px 16px; }
 
-.modal.active {
-  display: flex;
-}
-
-.modal-content {
-  background: #1a1a1a;
-  padding: 2rem;
-  width: 90%;
-  max-width: 600px;
-  color: var(--fg);
-  border-radius: 8px;
-  position: relative;
-}
-
-.modal-close {
-  position: absolute;
-  top: 1rem; right: 1rem;
-  color: var(--muted);
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  line-height: 1;
-}
-
-/* Spoiler toggle */
-.spoiler-toggle {
-  margin: 1rem 0;
-  padding: 0.5rem 1rem;
-  background: #333;
-  border: none;
-  color: var(--fg);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Filter controls */
-.filter-controls {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background: #1a1a1a;
-  border-radius: 4px;
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 0.4rem 0.8rem;
-  background: #333;
-  border: 1px solid #555;
-  color: var(--fg);
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.filter-btn.active {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
+/* Source matrix */
+.source-matrix a { color: #bd93f9; font-size: 0.7rem; text-decoration: none; margin-right: 4px; }
+.source-matrix a:hover { text-decoration: underline; }

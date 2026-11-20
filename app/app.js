@@ -1,240 +1,206 @@
-/* GTA 6 Trophy Guide & Tracker - App Logic */
+/*
+ * GTA VI Trophy Guide & Tracker — app.js
+ * Handles checklist, roadmap, missable views, progress tracking, export/import,
+ * spoiler mode, modal details, and source matrix.
+ */
+const KEY = 'gta6-trophy-checklist';
+const rows = document.getElementById('rows');
+const grade = document.getElementById('grade');
+const spoiler = document.getElementById('spoiler');
+const exportBtn = document.getElementById('export');
+const importInput = document.getElementById('import');
+const viewSelect = document.getElementById('view');
+const modal = document.getElementById('modal');
+const closeModal = document.getElementById('close-modal');
+const modalTitle = document.getElementById('modal-title');
+const modalGrade = document.getElementById('modal-grade');
+const modalDesc = document.getElementById('modal-desc');
+const modalGuide = document.getElementById('modal-guide');
+const modalSource = document.getElementById('modal-source');
+const sourceMatrix = document.getElementById('source-matrix');
+const progress = document.getElementById('progress');
 
-let GAME_TROPHIES = [];
-let TOTAL = 0;
+let earned = new Set(JSON.parse(localStorage.getItem(KEY) ?? '[]'));
+const doc = await (await fetch('data/trophies.json')).json();
 
-// State
-let earned = JSON.parse(localStorage.getItem('gta6_trophies_earned')) || {};
-let spoilerEnabled = JSON.parse(localStorage.getItem('gta6_spoiler')) !== false;
-let exportedData = null;
+// ----- render functions -----
 
-// DOM Elements
-const checklistBody = document.getElementById('checklist-body');
-const roadmapSteps = document.getElementById('roadmap-steps');
-const missableBody = document.getElementById('missable-body');
-const progressText = document.getElementById('progress-text');
-const tabBtns = document.querySelectorAll('.tab-btn');
-const appSection = document.getElementById('app');
+function renderTable() {
+  const gradeFilter = grade.value;
+  const isSpoiler = spoiler.checked;
+  const view = viewSelect.value;
 
-// Load trophies data via fetch (works in browser without import assertions)
-async function loadTrophies() {
-  try {
-    const response = await fetch('data/trophies.json');
-    const data = await response.json();
-    GAME_TROPHIES = data.trophies;
-    TOTAL = GAME_TROPHIES.length;
-    console.log(`Loaded ${TOTAL} trophies`);
-  } catch (e) {
-    console.error('Failed to load trophies.json:', e);
-    GAME_TROPHIES = [];
-    TOTAL = 0;
+  rows.replaceChildren();
+
+  // Filter trophies based on grade and spoiler status
+  let trophies = doc.trophies;
+  if (gradeFilter !== 'all') {
+    trophies = trophies.filter(t => t.grade === gradeFilter);
   }
+
+  // For roadmap view, sort by logical order (chapter progression)
+  if (view === 'roadmap') {
+    trophies = [...trophies].sort((a, b) => a.id - b.id);
+  }
+
+  for (const t of trophies) {
+    // Spoiler mode: hide name for hidden trophies
+    const displayName = isSpoiler && t.hidden
+      ? 'Hidden until earned'
+      : t.name;
+
+    // Check if earned
+    const isEarned = earned.has(t.name);
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = isEarned;
+    box.disabled = view === 'missable'; // Disable in missable view
+
+    box.addEventListener('change', () => {
+      if (box.checked) earned.add(t.name);
+      else earned.delete(t.name);
+      save();
+      updateProgress();
+      renderTable(); // re-render to reflect changes
+    });
+
+    // Build guide text (trim to one line or key phrase)
+    const guideText = t.guide ? t.guide.split('.')[0] + '.' : '';
+
+    // For missable view, show only missable/hidden with reasons
+    if (view === 'missable' && !(t.missable || t.hidden)) {
+      continue; // skip non-missable/non-hidden
+    }
+
+    // In missable view, show missable_reason for missable trophies
+    let displayGuide = guideText;
+    if (view === 'missable' && t.missable && t.missable_reason) {
+      displayGuide = t.missable_reason;
+    }
+
+    const cells = [
+      box,
+      `<span class="trophy-name">${displayName}</span>${isSpoiler && t.hidden ? ' <span class="spoiler-note">(hidden)</span>' : ''}`,
+      t.grade,
+      displayGuide
+    ];
+
+    const tr = document.createElement('tr');
+    for (const c of cells) {
+      const td = document.createElement('td');
+      if (typeof c === 'string') td.textContent = c;
+      else td.append(c);
+      tr.append(td);
+    }
+
+    // Click to open modal
+    tr.addEventListener('click', (e) => {
+      // Don't open modal if clicking the checkbox
+      if (e.target.type === 'checkbox') return;
+      openModal(t);
+    });
+
+    rows.append(tr);
+  }
+
+  updateProgress();
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadTrophies();
-  renderChecklist();
-  renderMissable();
-  updateProgress();
-  setupTabSwitching();
-  setupModals();
-  setupFilters();
-  setupExportImport();
-  setupSpoilerToggle();
+function renderRoadmap() {
+  // Show path to platinum: all trophies in ID order with earned state
+  renderTable();
+  // Add roadmap-specific styling/class adjustments
+  document.querySelectorAll('#rows tr').forEach((tr, i) => {
+    const gradeEl = tr.cells[2];
+    // Highlight platinum path
+    if (tr.cells[1].textContent.includes('Vice Got a Price!') || tr.cells[1].innerHTML.includes('platinum')) {
+      tr.style.fontWeight = 'bold';
+      tr.style.color = '#ffd700';
+    }
+  });
+}
+
+function renderMissable() {
+  // Already filtered in renderTable for missable/hidden only
+  renderTable();
+}
+
+// ----- modal -----
+
+function openModal(trophy) {
+  modalTitle.textContent = trophy.name;
+  modalGrade.textContent = trophy.grade;
+  modalDesc.textContent = trophy.description;
+  modalGuide.textContent = trophy.guide;
+  modalSource.textContent = trophy.source || 'Unknown';
+
+  // Build source matrix - list of unique URLs per source type
+  const sources = trophy.source ? trophy.source.split('; ').filter(s => s) : [];
+  sourceMatrix.innerHTML = '';
+  const seenUrls = new Set();
+  for (const src of sources) {
+    // Extract URLs from known sources
+    let url = src;
+    if (src.includes('GTABase')) url = 'https://gtabase.com';
+    else if (src.includes('PowerPyx')) url = 'https://powerpyx.com';
+    else if (src.includes('GamesRadar')) url = 'https://gamesradar.com';
+    else if (src.includes('Official PlayStation')) url = 'https://playstation.com';
+    else if (src.includes('CULTR')) url = 'https://cultr.com';
+    else if (src.includes('Beebom')) url = 'https://beebom.com';
+
+    if (url && !seenUrls.has(url)) {
+      seenUrls.add(url);
+      const a = document.createElement('a');
+      a.href = url;
+      a.textContent = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      sourceMatrix.append(a);
+      sourceMatrix.append(document.createElement('br'));
+    }
+  }
+
+  modal.showModal();
+}
+
+closeModal.addEventListener('click', () => modal.close());
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) modal.close();
 });
 
-// Tab switching
-function setupTabSwitching() {
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Update active tab button
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+// ----- progress -----
 
-      // Show corresponding section
-      document.querySelectorAll('.tab-content').forEach(section => {
-        section.classList.remove('active');
-      });
-
-      const tab = btn.dataset.tab;
-      document.getElementById(tab).classList.add('active');
-    });
-  });
-}
-
-// Render checklist table
-function renderChecklist() {
-  let html = '';
-  GAME_TROPHIES.forEach((trophy, idx) => {
-    const isEarned = earned[trophy.name] === true;
-    const displayName = spoilerEnabled ? trophy.name : (trophy.hidden ? '??? Hidden' : trophy.name);
-    const gradeColor = gradeToColor(trophy.grade);
-    const guideText = spoilerEnabled || !trophy.hidden ? trophy.guide : 'Hidden until earned';
-    const sourceLink = `<a href="${trophy.source}" target="_blank" style="color:var(--accent);text-decoration:underline;font-size:0.75rem;">Source</a>`;
-
-    html += `<tr>
-      <td>${idx + 1}</td>
-      <td title="${trophy.name}">${displayName}</td>
-      <td><span style="color:${gradeColor};" title="${trophy.grade}">${trophy.grade.charAt(0).toUpperCase() + trophy.grade.slice(1)}</span></td>
-      <td title="${trophy.guide}">${guideText}</td>
-      <td>${sourceLink}</td>
-    </tr>`;
-  });
-  checklistBody.innerHTML = html;
-
-  // Add click handlers for modals
-  document.querySelectorAll('#checklist-table tbody tr').forEach((row, idx) => {
-    row.addEventListener('click', () => openTrophyModal(GAME_TROPHIES[idx]));
-  });
-}
-
-// Render missable/hidden table
-function renderMissable() {
-  const missableTrophies = GAME_TROPHIES.filter(t => t.missable || t.hidden);
-  let html = '';
-
-  missableTrophies.forEach((trophy, idx) => {
-    const isEarned = earned[trophy.name] === true;
-    const gradeColor = gradeToColor(trophy.grade);
-    const missableReason = trophy.missable ? (trophy.missable_reason || 'Potentially missable') : 'Hidden until earned';
-    const displayText = spoilerEnabled || !trophy.hidden ? trophy.official : 'Hidden';
-
-    html += `<tr>
-      <td title="${trophy.name}">${trophy.name}</td>
-      <td><span style="color:${gradeColor};" title="${trophy.grade}">${trophy.grade.charAt(0).toUpperCase() + trophy.grade.slice(1)}</span></td>
-      <td title="${missableReason}">${missableReason}</td>
-    </tr>`;
-  });
-
-  missableBody.innerHTML = html;
-}
-
-// Update progress display
 function updateProgress() {
-  let count = 0;
-  GAME_TROPHIES.forEach(t => {
-    if (earned[t.name] === true) count++;
-  });
-  const percent = Math.round((count / TOTAL) * 100);
-  progressText.textContent = `${count}/${TOTAL} earned (${percent}%)`;
+  const count = earned.size;
+  progress.textContent = `${count} of ${doc.trophies.length} earned`;
+  localStorage.setItem(KEY, JSON.stringify([...earned]));
 }
 
-// Open trophy modal
-function openTrophyModal(trophy) {
-  const isEarned = earned[trophy.name] === true;
-  const gradeColor = gradeToColor(trophy.grade);
-
-  let guideContent = trophy.guide;
-  if (spoilerEnabled || !trophy.hidden) {
-    // Show full guide
-  } else {
-    guideContent = 'Hidden until earned - meditate at every spot across Leonida';
-  }
-
-  const modalHTML = `
-    <div class="modal" id="trophy-modal">
-      <div class="modal-content">
-        <span class="modal-close" onclick="closeTrophyModal()">&times;</span>
-        <h2>${trophy.official}</h2>
-        <p><strong>Grade:</strong> <span style="color:${gradeColor}">${trophy.grade.charAt(0).toUpperCase() + trophy.grade.slice(1)}</span></p>
-        <p><strong>Guide:</strong></p>
-        <p>${guideContent}</p>
-        <p><strong>Source:</strong> <a href="${trophy.source}" target="_blank">${trophy.source}</a></p>
-        ${isEarned ? '<p style="color: good; margin-top: 1rem;">✓ Earned!</p>' : ''}
-        <button class="spoiler-toggle" onclick="toggleSpoiler()">Toggle Spoiler</button>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-  document.getElementById('trophy-modal').classList.add('active');
-  document.body.style.overflow = 'hidden';
+function save() {
+  localStorage.setItem(KEY, JSON.stringify([...earned]));
 }
 
-function closeTrophyModal() {
-  const modal = document.getElementById('trophy-modal');
-  if (modal) {
-    modal.remove();
-    document.body.style.overflow = '';
-  }
-}
+// ----- event listeners -----
 
-function toggleSpoiler() {
-  spoilerEnabled = !spoilerEnabled;
-  localStorage.setItem('gta6_spoiler', spoilerEnabled);
-  renderChecklist();
-  renderMissable();
-  closeTrophyModal();
-}
+grade.addEventListener('change', renderTable);
+spoiler.addEventListener('change', renderTable);
+exportBtn.addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify([...earned])], { type: 'application/json' }));
+  a.download = 'trophy-progress.json';
+  a.click();
+});
+importInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  earned = new Set(JSON.parse(await file.text()));
+  save();
+  renderTable();
+  updateProgress();
+});
+viewSelect.addEventListener('change', renderTable);
 
-// Grade to color helper
-function gradeToColor(grade) {
-  const colors = { 'platinum': '#ffd700', 'gold': '#ffd700', 'silver': '#c0c0c0', 'bronze': '#cd7f32' };
-  return colors[grade] || '#fff';
-}
+// ----- initial render -----
 
-// Filters
-function setupFilters() {
-  // Grade filter buttons
-  const gradeBtns = document.querySelectorAll('.filter-btn');
-  gradeBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      gradeBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      applyFilters(btn.dataset.filter);
-    });
-  });
-}
-
-function applyFilters(filter) {
-  const rows = document.querySelectorAll('#checklist-table tbody tr');
-  let shown = 0;
-
-  rows.forEach(row => {
-    const grade = row.cells[2].textContent.trim();
-    const shouldShow = filter === 'all' || grade.toLowerCase().includes(filter);
-    row.style.display = shouldShow ? '' : 'none';
-    if (shouldShow) shown++;
-  });
-
-  // Update visible count
-  const total = document.querySelectorAll('#checklist-table tbody tr:not([style*="display: none"])').length;
-  progressText.textContent = `${show}/${TOTAL} earned (${Math.round((show/TOTAL)*100)}%)`;
-}
-
-// Export/Import
-function setupExportImport() {
-  const exportBtn = document.createElement('button');
-  exportBtn.textContent = 'Export Progress';
-  exportBtn.style.margin = '1rem 0';
-  exportBtn.style.padding = '0.5rem 1rem';
-  exportBtn.style.background = '#333';
-  exportBtn.style.color = '#fff';
-  exportBtn.style.border = 'none';
-  exportBtn.style.borderRadius = '4px';
-  exportBtn.style.cursor = 'pointer';
-
-  exportBtn.addEventListener('click', () => {
-    const data = {
-      earned,
-      spoiler: spoilerEnabled,
-      version: '1.0'
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'gta6_trophies_progress.json';
-    a.click();
-    URL.revoke(url);
-  });
-
-  // Append to filter controls area
-  const filterArea = document.querySelector('.filter-controls') || document.body;
-  document.querySelector('footer').parentNode.insertBefore(exportBtn, document.querySelector('footer'));
-}
-
-// Setup spoiler toggle in modals
-window.toggleSpoiler = toggleSpoiler;
-window.closeTrophyModal = closeTrophyModal;
+renderTable();
+updateProgress();
