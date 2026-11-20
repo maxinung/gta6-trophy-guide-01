@@ -169,7 +169,15 @@ function showDetail(id) {
 
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('detailView').classList.remove('hidden');
-  window.location.hash = `trophy=${getSlug(trophy)}`;
+  
+  // Preserve existing hash segments (like spoilers=off) when updating trophy hash
+  const hash = window.location.hash;
+  const segments = hash.split('#').filter(Boolean);
+  const otherSegments = segments.filter(s => !s.startsWith('trophy='));
+  const newHash = '#' + ['trophy=' + getSlug(trophy), ...otherSegments].join('#');
+  if (hash !== newHash) {
+    window.location.hash = newHash;
+  }
 }
 
 function toggleEarned(id) {
@@ -208,7 +216,7 @@ function showRoadmap() {
         <ul>
           ${phase.trophies.map(t => {
             const earned = currentProgress[t.id] === true;
-            return `<li class="${earned ? 'done' : ''} ${t.missable ? 'missable' : ''}">
+            return `<li class="${earned ? 'done' : ''} ${t.missable ? 'missable' : ''}">`
               <input type="checkbox" class="roadmap-checkbox" ${earned ? 'checked' : ''} data-id="${t.id}" ${demoMode ? '' : 'onchange="toggleRoadmap(this)"'}>
               ${t.name} ${t.missable ? '⚠' : ''}
             </li>`;
@@ -221,6 +229,9 @@ function showRoadmap() {
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('roadmapView').classList.remove('hidden');
   window.location.hash = '#roadmap';
+  
+  // Ensure roadmap view starts at top
+  window.scrollTo(0, 0);
 }
 
 function toggleRoadmap(checkbox) {
@@ -279,19 +290,26 @@ function importProgress(file) {
 
 function handleHashChange() {
   const hash = window.location.hash;
-  if (hash.startsWith('#trophy=')) {
-    const slug = hash.slice(8);
+  const segments = hash.split('#').filter(Boolean);
+  
+  const hasRoadmap = segments.includes('roadmap');
+  const hasMissable = segments.includes('missable');
+  const hasDemoProgress = segments.includes('demo-progress');
+  const trophySegment = segments.find(s => s.startsWith('trophy='));
+  
+  if (trophySegment) {
+    const slug = trophySegment.slice(7);
     const trophy = trophies.find(t => getSlug(t) === slug);
     if (trophy) showDetail(trophy.id);
-  } else if (hash === '#roadmap') {
+  } else if (hasRoadmap) {
     showRoadmap();
-  } else if (hash === '#missable') {
+  } else if (hasMissable) {
     document.getElementById('missableFilter').checked = true;
     renderList();
     document.getElementById('listView').classList.remove('hidden');
     document.getElementById('detailView').classList.add('hidden');
     document.getElementById('roadmapView').classList.add('hidden');
-  } else if (hash === '#demo-progress') {
+  } else if (hasDemoProgress) {
     applyDemoProgress();
     document.getElementById('listView').classList.remove('hidden');
     document.getElementById('detailView').classList.add('hidden');
