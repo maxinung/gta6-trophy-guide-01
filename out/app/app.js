@@ -71,11 +71,15 @@ function updateProgressUI() {
   document.getElementById('progressText').textContent = `${earned} / ${total} (${pct}%)`;
 }
 
+function getSpoilersOff() {
+  return window.location.hash.includes('spoilers=off');
+}
+
 function matchesFilters(trophy) {
   const gradeFilter = document.getElementById('gradeFilter').value;
   const typeFilter = document.getElementById('typeFilter').value;
   const missableOnly = document.getElementById('missableFilter').checked;
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
 
   if (gradeFilter !== 'all' && trophy.grade !== gradeFilter) return false;
   if (typeFilter !== 'all' && trophy.type !== typeFilter) return false;
@@ -85,7 +89,7 @@ function matchesFilters(trophy) {
 
 function renderList() {
   const list = document.getElementById('trophyList');
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
   const demoMode = window.location.hash === '#demo-progress';
   const currentProgress = demoMode ? demoProgress : progress;
 
@@ -128,7 +132,7 @@ function showDetail(id) {
   const demoMode = window.location.hash === '#demo-progress';
   const currentProgress = demoMode ? demoProgress : progress;
   const earned = currentProgress[trophy.id] === true;
-  const hideSpoilers = document.getElementById('spoilerToggle').checked;
+  const hideSpoilers = document.getElementById('spoilerToggle').checked && !getSpoilersOff();
 
   const detail = document.getElementById('trophyDetail');
   const nameDisplay = (hideSpoilers && trophy.hidden && !earned) ? '???' : trophy.name;
@@ -165,7 +169,15 @@ function showDetail(id) {
 
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('detailView').classList.remove('hidden');
-  window.location.hash = `trophy=${getSlug(trophy)}`;
+  
+  // Preserve existing hash segments (like spoilers=off) when updating trophy hash
+  const hash = window.location.hash;
+  const segments = hash.split('#').filter(Boolean);
+  const otherSegments = segments.filter(s => !s.startsWith('trophy='));
+  const newHash = '#' + ['trophy=' + getSlug(trophy), ...otherSegments].join('#');
+  if (hash !== newHash) {
+    window.location.hash = newHash;
+  }
 }
 
 function toggleEarned(id) {
@@ -217,6 +229,9 @@ function showRoadmap() {
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('roadmapView').classList.remove('hidden');
   window.location.hash = '#roadmap';
+  
+  // Ensure roadmap view starts at top
+  window.scrollTo(0, 0);
 }
 
 function toggleRoadmap(checkbox) {
@@ -275,19 +290,26 @@ function importProgress(file) {
 
 function handleHashChange() {
   const hash = window.location.hash;
-  if (hash.startsWith('#trophy=')) {
-    const slug = hash.slice(8);
+  const segments = hash.split('#').filter(Boolean);
+  
+  const hasRoadmap = segments.includes('roadmap');
+  const hasMissable = segments.includes('missable');
+  const hasDemoProgress = segments.includes('demo-progress');
+  const trophySegment = segments.find(s => s.startsWith('trophy='));
+  
+  if (trophySegment) {
+    const slug = trophySegment.slice(7);
     const trophy = trophies.find(t => getSlug(t) === slug);
     if (trophy) showDetail(trophy.id);
-  } else if (hash === '#roadmap') {
+  } else if (hasRoadmap) {
     showRoadmap();
-  } else if (hash === '#missable') {
+  } else if (hasMissable) {
     document.getElementById('missableFilter').checked = true;
     renderList();
     document.getElementById('listView').classList.remove('hidden');
     document.getElementById('detailView').classList.add('hidden');
     document.getElementById('roadmapView').classList.add('hidden');
-  } else if (hash === '#demo-progress') {
+  } else if (hasDemoProgress) {
     applyDemoProgress();
     document.getElementById('listView').classList.remove('hidden');
     document.getElementById('detailView').classList.add('hidden');

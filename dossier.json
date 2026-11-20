@@ -6,8 +6,15 @@
   "version": "1.0.0",
   "author": "maxinung",
   "created": "2026-11-20T00:00:00Z",
-  "updated": "2026-11-20T04:33:00Z",
-  "tags": ["gta6", "trophy", "guide", "offline", "checklist", "ps5"],
+  "updated": "2026-11-20T04:43:56Z",
+  "tags": [
+    "gta6",
+    "trophy",
+    "guide",
+    "offline",
+    "checklist",
+    "ps5"
+  ],
   "sources": [
     "https://exophase.com/game/grand-theft-auto-vi/",
     "https://gtabase.com/guides/gta-6-trophies/",
@@ -19,17 +26,17 @@
   "trophies": {
     "total": 55,
     "platinum": 1,
-    "gold": 3,
-    "silver": 10,
-    "bronze": 41,
+    "gold": 2,
+    "silver": 6,
+    "bronze": 46,
     "types": {
       "story": 13,
-      "side": 26,
-      "collection": 10,
-      "stunt": 6
+      "side": 34,
+      "collection": 7,
+      "stunt": 1
     },
     "missable": 7,
-    "hidden": 28
+    "hidden": 31
   },
   "features": [
     "Complete 55-trophy checklist with localStorage persistence",
@@ -51,15 +58,15 @@
     },
     {
       "file": "screenshots/2-detail.png",
-      "view": "Platinum trophy 'Vice Got a Price!' detail (1280x1000, HTTP server)",
-      "size_kb": 66,
-      "hash": "sha256:426c26b31ed063ad83c5471d63b94cdaa47b87824d088de51924f08d4f4323be"
+      "view": "Platinum trophy 'Vice Got a Price!' detail (1280x1000, HTTP server, name visible)",
+      "size_kb": 68,
+      "hash": "sha256:2d1fa5d8d088077f0e1d3488fadd9d27683a3e93b421a26e4cfe8cf9656084a0"
     },
     {
       "file": "screenshots/3-roadmap.png",
-      "view": "6-phase roadmap to platinum (spoilers off, no header overlap, HTTP server)",
-      "size_kb": 51,
-      "hash": "sha256:6da18302ccf2f0fdfc291c1a7ba182772b43665deaf1db73d18d38197ed27740"
+      "view": "6-phase roadmap to platinum (spoilers off, from top, no header overlap, HTTP server)",
+      "size_kb": 70,
+      "hash": "sha256:307f9203dd29787fc3c7f62611c3ee9bbbd321b7261d0b8f111fccc38cb618d4"
     },
     {
       "file": "screenshots/4-missable.png",
@@ -72,17 +79,25 @@
     "fase1b": {
       "date": "2026-11-20",
       "spoiler_hash": "Added #spoilers=off support in app.js getSpoilersOff() for deterministic screenshots",
-      "header_overlap": "Fixed in styles.css — header & toolbar solid background (var(--card)) + z-index",
+      "header_overlap": "Fixed in styles.css \u2014 header & toolbar solid background (var(--card)) + z-index",
       "detail_truncation": "Screenshot 2-detail.png captured at 1280x1000 for full How to Earn",
       "screenshots_rerendered": "All 4 screenshots re-captured with #spoilers=off showing trophy names",
-      "spot_check": "5 trophies verified against Exophase — all match"
+      "spot_check": "5 trophies verified against Exophase \u2014 all match"
     },
     "fase1c": {
       "date": "2026-11-20",
-      "router_hash": "Updated handleHashChange() to parse combined hashes (split on #) — supports #roadmap#spoilers=off, #trophy=...#spoilers=off",
-      "http_server_screenshots": "Re-rendered all 4 screenshots via local HTTP server (python3 -m http.server 8123) — file:// blocked fetch() due to CORS",
+      "router_hash": "Updated handleHashChange() to parse combined hashes (split on #) \u2014 supports #roadmap#spoilers=off, #trophy=...#spoilers=off",
+      "http_server_screenshots": "Re-rendered all 4 screenshots via local HTTP server (python3 -m http.server 8123) \u2014 file:// blocked fetch() due to CORS",
       "missable_count": "Corrected from 8 to 7 missable trophies (verified in trophies.json: ids 22,23,24,25,26,27,29)",
-      "screenshots_verified": "4 distinct SHA256 hashes confirmed; 1-list: trophy names visible, 2-detail: full How to Earn, 3-roadmap: 6 phases no overlap, 4-missable: 7 trophies with ⚠ badges"
+      "screenshots_verified": "CORRECTED by leader: only 1-list and 4-missable were actually good; 2-detail showed '???' (masked) and 3-roadmap had ~40% empty top \u2014 both failed leader verification. See fase1d."
+    },
+    "fase1d": {
+      "date": "2026-11-20",
+      "session_deaths": "FASE 1c (PID 546922) and FASE 1d (PID 548790) sessions both died with 0-byte logs before committing; work survived in the working tree; transcripts recorded in the Hermes store",
+      "detail_masking_fix": "showDetail() overwrote location.hash with just #trophy=<slug>, wiping out spoilers=off and re-rendering masked \u2014 fixed to preserve other hash segments",
+      "roadmap_scroll": "showRoadmap() now calls window.scrollTo(0, 0) so captures start at the top",
+      "syntax_error_fix_leader": "FASE 1d broke a template literal in showRoadmap() (stray backtick) \u2014 app.js failed to parse, nothing rendered. Fixed by the leader (1 character removed, node --check passes)",
+      "final_renders_leader": "2-detail (sha256:2d1fa5d8...) and 3-roadmap (sha256:307f9203...) re-rendered by the leader via local HTTP server; all 4 screenshots verified visually by the leader with distinct SHA256"
     }
   },
   "build": {

@@ -216,7 +216,7 @@ function showRoadmap() {
         <ul>
           ${phase.trophies.map(t => {
             const earned = currentProgress[t.id] === true;
-            return `<li class="${earned ? 'done' : ''} ${t.missable ? 'missable' : ''}">`
+            return `<li class="${earned ? 'done' : ''} ${t.missable ? 'missable' : ''}">
               <input type="checkbox" class="roadmap-checkbox" ${earned ? 'checked' : ''} data-id="${t.id}" ${demoMode ? '' : 'onchange="toggleRoadmap(this)"'}>
               ${t.name} ${t.missable ? '⚠' : ''}
             </li>`;
