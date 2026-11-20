@@ -3,86 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GTA VI Trophy Guide & Tracker</title>
+<title>GTA VI trophy checklist</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <h1>GTA VI Trophy Guide & Tracker</h1>
-  <div class="progress-wrap">
-    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <p id="progressText" class="progress-text">0 of 55 earned (0%)</p>
-  </div>
+  <h1>GTA VI trophy checklist</h1>
+  <p id="progress">0 of 55 earned</p>
 </header>
-
-<nav class="tabs" role="tablist" aria-label="Main views">
-  <button role="tab" id="tabChecklist" aria-selected="true" aria-controls="panelChecklist">Checklist</button>
-  <button role="tab" id="tabRoadmap" aria-selected="false" aria-controls="panelRoadmap">Roadmap</button>
-  <button role="tab" id="tabMissable" aria-selected="false" aria-controls="panelMissable">Missable</button>
-</nav>
-
-<div class="controls" role="search" aria-label="Filter trophies">
-  <label>Grade
-    <select id="filterGrade">
-      <option value="all">All</option>
-      <option value="platinum">Platinum</option>
-      <option value="gold">Gold</option>
-      <option value="silver">Silver</option>
-      <option value="bronze">Bronze</option>
-    </select>
-  </label>
-  <label>Type
-    <select id="filterType">
-      <option value="all">All</option>
-      <option value="story">Story</option>
-      <option value="activity">Activity</option>
-      <option value="collectible">Collectible</option>
-      <option value="completion">Completion</option>
-      <option value="platinum">Platinum</option>
-    </select>
-  </label>
-  <label class="checkbox-wrap">
-    <input type="checkbox" id="filterMissableOnly"> Missable only
-  </label>
-  <label class="checkbox-wrap">
-    <input type="checkbox" id="spoilerToggle" checked> Hide story spoilers
-  </label>
-  <button id="exportBtn" type="button">Export Progress</button>
-  <label class="import-wrap">Import Progress <input id="importFile" type="file" accept="application/json"></label>
+<div class="controls">
+  <label>Grade <select id="grade"><option value="all">All</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></label>
+  <label>Spoiler <select id="spoiler"><option value="off">Show all</option><option value="on">Hide story</option></select></label>
+  <label>Missable <select id="missable"><option value="all">All</option><option value="missable">Missable only</option></select></label>
+  <button id="export" type="button">Export progress</button>
+  <label class="import">Import progress <input id="import" type="file" accept="application/json"></button>
 </div>
-
-<div role="tabpanel" id="panelChecklist" aria-labelledby="tabChecklist" class="panel active">
-  <table id="trophyTable">
-    <thead>
-      <tr>
-        <th scope="col">Earned</th>
-        <th scope="col">Trophy</th>
-        <th scope="col">Grade</th>
-        <th scope="col">Type</th>
-        <th scope="col">Guide</th>
-      </tr>
-    </thead>
-    <tbody id="trophyRows"></tbody>
-  </table>
+<table>
+  <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>How to get it</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<div id="roadmap" style="display: none; margin: 20px 0;">
+  <h3>Platinum Roadmap</h3>
+  <p>The platinum trophy <strong>Vice Got a Price!</strong> unlocks after earning all 54 other trophies. The recommended order is:</p>
+  <ol>
+    <li>Complete Chapter 1 (Paradise Lost)</li>
+    <li>Complete Chapter 2 (T**s Ass Drug Money)</li>
+    <li>Complete Chapter 3 (Vice City, Baby!)</li>
+    <li>Complete Chapter 4 (Top Of The World, Ma)</li>
+    <li>Complete the final mission (You Gotta Know When to Get Off)</li>
+    <li>Reach 100% Completion (A Long Road)</li>
+    <li>Complete all activity types (Master of None)</li>
+    <li>Earn gold medals in all Shooting Range challenges (The Shootist)</li>
+    <li>Win drone races at all 14 locations (Top Fun)</li>
+    <li>Complete 250 Stunts (Cunning Stunts)</li>
+    <li>Complete 8 stranger mission strands (Strangers & Freaks)</li>
+    <li>Complete 3 collectible card sets (Don't Touch My Deck)</li>
+    <li>Earn $250,000 laundering marked bills (Dime on the Dollar)</li>
+    <li>Spend $100,000 across all shops (Treat Yo Self)</li>
+    <li>Purchase all 8 garage properties (Little Boxes)</li>
+    <li>Register 10 vehicles to Scooter Bros app (On the Spot)</li>
+    <li>Meditate at all 18 spots (Positive Mental Attitude) — do the Chapter 1 balcony session first!</li>
+    <li>Find 100 vehicles (Whip It Good)</li>
+    <li>Rob 5 bank vaults (Maximum Withdrawal)</li>
+    <li>Rob 3 shops back-to-back with partner (Retail Therapy)</li>
+    <li>Complete 50 challenges (One Last Thing)</li>
+    <li>Find all 52 areas (The Goodtime State)</li>
+    <li>Make choices affecting Criminal Profile (Actions Speak Louder)</li>
+  </ol>
 </div>
-
-<div role="tabpanel" id="panelRoadmap" aria-labelledby="tabRoadmap" class="panel" hidden>
-  <section id="roadmapContent"></section>
-</div>
-
-<div role="tabpanel" id="panelMissable" aria-labelledby="tabMissable" class="panel" hidden>
-  <section id="missableContent"></section>
-</div>
-
-<dialog id="detailDialog" class="detail-dialog">
-  <div class="dialog-content">
-    <button class="dialog-close" id="dialogClose" aria-label="Close details">&times;</button>
-    <div id="dialogBody"></div>
-  </div>
-</dialog>
-
 <script type="module" src="app.js"></script>
 </body>
 </html>
