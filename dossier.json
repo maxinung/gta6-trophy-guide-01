@@ -59,14 +59,14 @@
       {
         "file": "screenshots/2-detail.png",
         "view": "Platinum trophy 'Vice Got a Price!' detail (1280x1000)",
-        "size_kb": 33,
-        "hash": "sha256:9cf36d95b538ae11270d787c03b4d38602df96a524bbdca144469e38b6d1c514"
+        "size_kb": 68,
+        "hash": "sha256:2d1fa5d8d088077f0e1d3488fadd9d27683a3e93b421a26e4cfe8cf9656084a0"
       },
       {
         "file": "screenshots/3-roadmap.png",
         "view": "6-phase roadmap to platinum (spoilers off, no header overlap)",
-        "size_kb": 32,
-        "hash": "sha256:02c43f9fe7cfd7eb97b1c643e886b612554b8002fafbb60dcaf647115b7e49f4"
+        "size_kb": 70,
+        "hash": "sha256:307f9203dd29787fc3c7f62611c3ee9bbbd321b7261d0b8f111fccc38cb618d4"
       },
       {
         "file": "screenshots/4-missable.png",

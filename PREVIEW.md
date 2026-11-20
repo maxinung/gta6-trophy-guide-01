@@ -42,8 +42,8 @@ makefun-gta6-trophy-guide-01/
 || File | View | Size ||
 ||------|------|------||
 || 1-list.png | Main list (all 55 trophies visible, spoilers off) | 62.1 KB ||
-|| 2-detail.png | Platinum trophy "Vice Got a Price!" detail (1280x1000) | 32.8 KB ||
-|| 3-roadmap.png | 6-phase roadmap to platinum (spoilers off, no header overlap) | 32.0 KB ||
+|| 2-detail.png | Platinum trophy "Vice Got a Price!" detail (1280x1000) | 67.7 KB ||
+|| 3-roadmap.png | 6-phase roadmap to platinum (spoilers off, no header overlap) | 70.1 KB ||
 || 4-missable.png | Missable-only filter (7 trophies, spoilers off, ⚠ badges) | 67.9 KB ||
 
 All screenshots captured via **local HTTP server** (python3 -m http.server) with headless Chromium, combined hash support (`#roadmap#spoilers=off`, `#trophy=...#spoilers=off`), distinct content verified by SHA256.
