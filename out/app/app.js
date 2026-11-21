@@ -30,6 +30,9 @@ function renderTable() {
   const isSpoiler = spoiler.checked;
   const view = viewSelect.value;
 
+  // Update table header based on view
+  updateTableHeader(view);
+
   rows.replaceChildren();
 
   // Filter trophies based on grade and spoiler status
@@ -74,23 +77,50 @@ function renderTable() {
 
     // In missable view, show missable_reason for missable trophies
     let displayGuide = guideText;
+    let displayReason = '';
     if (view === 'missable' && t.missable && t.missable_reason) {
-      displayGuide = t.missable_reason;
+      displayGuide = guideText;
+      displayReason = t.missable_reason;
+    } else if (view === 'missable' && t.hidden && !t.missable) {
+      displayReason = 'Hidden until earned';
     }
 
-    const cells = [
-      box,
-      `<span class="trophy-name">${displayName}</span>${isSpoiler && t.hidden ? ' <span class="spoiler-note">(hidden)</span>' : ''}`,
-      t.grade,
-      displayGuide
-    ];
-
     const tr = document.createElement('tr');
-    for (const c of cells) {
-      const td = document.createElement('td');
-      if (typeof c === 'string') td.textContent = c;
-      else td.append(c);
-      tr.append(td);
+    if (isEarned) tr.classList.add('earned');
+    if (view === 'roadmap') tr.classList.add('roadmap-step');
+
+    // Earned checkbox cell
+    const tdEarned = document.createElement('td');
+    tdEarned.className = 'earned';
+    tdEarned.append(box);
+    tr.append(tdEarned);
+
+    // Trophy name cell - use innerHTML for the span
+    const tdTrophy = document.createElement('td');
+    tdTrophy.className = 'trophy';
+    const gradeClass = `grade-${t.grade}`;
+    const spoilerNote = isSpoiler && t.hidden ? ' <span class="spoiler-note">(hidden)</span>' : '';
+    tdTrophy.innerHTML = `<span class="trophy-name">${displayName}</span>${spoilerNote}`;
+    tr.append(tdTrophy);
+
+    // Grade cell with badge
+    const tdGrade = document.createElement('td');
+    tdGrade.className = 'grade';
+    tdGrade.innerHTML = `<span class="grade-badge ${gradeClass}">${t.grade}</span>`;
+    tr.append(tdGrade);
+
+    // Guide/How to get it cell
+    const tdGuide = document.createElement('td');
+    tdGuide.className = 'guide';
+    tdGuide.textContent = displayGuide;
+    tr.append(tdGuide);
+
+    // Reason cell (only for missable view)
+    if (view === 'missable') {
+      const tdReason = document.createElement('td');
+      tdReason.className = 'reason';
+      tdReason.textContent = displayReason;
+      tr.append(tdReason);
     }
 
     // Click to open modal
@@ -106,40 +136,184 @@ function renderTable() {
   updateProgress();
 }
 
+function updateTableHeader(view) {
+  const thead = document.querySelector('thead tr');
+  if (!thead) return;
+
+  if (view === 'missable') {
+    thead.innerHTML = '<th class="earned">Earned</th><th class="trophy">Trophy</th><th class="grade">Grade</th><th class="guide">How to get it</th><th class="reason">Reason</th>';
+  } else if (view === 'roadmap') {
+    thead.innerHTML = '<th class="earned">Step</th><th class="trophy">Trophy</th><th class="grade">Grade</th><th class="guide">How to get it</th>';
+  } else {
+    thead.innerHTML = '<th class="earned">Earned</th><th class="trophy">Trophy</th><th class="grade">Grade</th><th class="guide">How to get it</th>';
+  }
+}
+
 function renderRoadmap() {
-  // Show path to platinum: all trophies in ID order with earned state
-  renderTable();
-  // Add roadmap-specific styling/class adjustments
-  document.querySelectorAll('#rows tr').forEach((tr, i) => {
-    const gradeEl = tr.cells[2];
-    // Highlight platinum path
-    if (tr.cells[1].textContent.includes('Vice Got a Price!') || tr.cells[1].innerHTML.includes('platinum')) {
-      tr.style.fontWeight = 'bold';
-      tr.style.color = '#ffd700';
-    }
-  });
+  // Roadmap view: show all trophies in order with step numbers
+  const gradeFilter = grade.value;
+  const isSpoiler = spoiler.checked;
+
+  // Update table header for roadmap
+  updateTableHeader('roadmap');
+
+  rows.replaceChildren();
+
+  let trophies = doc.trophies;
+  if (gradeFilter !== 'all') {
+    trophies = trophies.filter(t => t.grade === gradeFilter);
+  }
+  trophies = [...trophies].sort((a, b) => a.id - b.id);
+
+  for (let i = 0; i < trophies.length; i++) {
+    const t = trophies[i];
+    const isEarned = earned.has(t.name);
+
+    const displayName = isSpoiler && t.hidden
+      ? 'Hidden until earned'
+      : t.name;
+
+    const guideText = t.guide ? t.guide.split('.')[0] + '.' : '';
+
+    const tr = document.createElement('tr');
+    tr.classList.add('roadmap-step');
+    if (isEarned) tr.classList.add('earned');
+
+    // Step number cell
+    const tdStep = document.createElement('td');
+    tdStep.className = 'earned';
+    tdStep.textContent = `${i + 1}`;
+    tr.append(tdStep);
+
+    // Trophy name cell
+    const tdTrophy = document.createElement('td');
+    tdTrophy.className = 'trophy';
+    const spoilerNote = isSpoiler && t.hidden ? ' <span class="spoiler-note">(hidden)</span>' : '';
+    tdTrophy.innerHTML = `<span class="trophy-name">${displayName}</span>${spoilerNote}`;
+    tr.append(tdTrophy);
+
+    // Grade cell with badge
+    const tdGrade = document.createElement('td');
+    tdGrade.className = 'grade';
+    const gradeClass = `grade-${t.grade}`;
+    tdGrade.innerHTML = `<span class="grade-badge ${gradeClass}">${t.grade}</span>`;
+    tr.append(tdGrade);
+
+    // Guide cell
+    const tdGuide = document.createElement('td');
+    tdGuide.className = 'guide';
+    tdGuide.textContent = guideText;
+    tr.append(tdGuide);
+
+    // Click to open modal
+    tr.addEventListener('click', (e) => {
+      if (e.target.type === 'checkbox') return;
+      openModal(t);
+    });
+
+    rows.append(tr);
+  }
+
+  updateProgress();
 }
 
 function renderMissable() {
-  // Already filtered in renderTable for missable/hidden only
-  renderTable();
+  // Missable view: show only missable/hidden with reasons
+  const gradeFilter = grade.value;
+  const isSpoiler = spoiler.checked;
+
+  // Update table header for missable
+  updateTableHeader('missable');
+
+  rows.replaceChildren();
+
+  let trophies = doc.trophies;
+  if (gradeFilter !== 'all') {
+    trophies = trophies.filter(t => t.grade === gradeFilter);
+  }
+
+  // Filter to only missable or hidden
+  trophies = trophies.filter(t => t.missable || t.hidden);
+
+  for (const t of trophies) {
+    const displayName = isSpoiler && t.hidden
+      ? 'Hidden until earned'
+      : t.name;
+
+    const isEarned = earned.has(t.name);
+    const guideText = t.guide ? t.guide.split('.')[0] + '.' : '';
+
+    let displayReason = '';
+    if (t.missable && t.missable_reason) {
+      displayReason = t.missable_reason;
+    } else if (t.hidden && !t.missable) {
+      displayReason = 'Hidden until earned';
+    }
+
+    const tr = document.createElement('tr');
+    if (isEarned) tr.classList.add('earned');
+
+    // Earned checkbox cell (disabled in missable view)
+    const tdEarned = document.createElement('td');
+    tdEarned.className = 'earned';
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = isEarned;
+    box.disabled = true;
+    tdEarned.append(box);
+    tr.append(tdEarned);
+
+    // Trophy name cell
+    const tdTrophy = document.createElement('td');
+    tdTrophy.className = 'trophy';
+    const spoilerNote = isSpoiler && t.hidden ? ' <span class="spoiler-note">(hidden)</span>' : '';
+    tdTrophy.innerHTML = `<span class="trophy-name">${displayName}</span>${spoilerNote}`;
+    tr.append(tdTrophy);
+
+    // Grade cell with badge
+    const tdGrade = document.createElement('td');
+    tdGrade.className = 'grade';
+    const gradeClass = `grade-${t.grade}`;
+    tdGrade.innerHTML = `<span class="grade-badge ${gradeClass}">${t.grade}</span>`;
+    tr.append(tdGrade);
+
+    // Guide cell
+    const tdGuide = document.createElement('td');
+    tdGuide.className = 'guide';
+    tdGuide.textContent = guideText;
+    tr.append(tdGuide);
+
+    // Reason cell
+    const tdReason = document.createElement('td');
+    tdReason.className = 'reason';
+    tdReason.textContent = displayReason;
+    tr.append(tdReason);
+
+    // Click to open modal
+    tr.addEventListener('click', (e) => {
+      if (e.target.type === 'checkbox') return;
+      openModal(t);
+    });
+
+    rows.append(tr);
+  }
+
+  updateProgress();
 }
 
 // ----- modal -----
 
 function openModal(trophy) {
   modalTitle.textContent = trophy.name;
-  modalGrade.textContent = trophy.grade;
+  modalGrade.innerHTML = `<span class="grade-badge grade-${trophy.grade}">${trophy.grade}</span>`;
   modalDesc.textContent = trophy.description;
   modalGuide.textContent = trophy.guide;
-  modalSource.textContent = trophy.source || 'Unknown';
 
-  // Build source matrix - list of unique URLs per source type
+  // Build source links
   const sources = trophy.source ? trophy.source.split('; ').filter(s => s) : [];
   sourceMatrix.innerHTML = '';
   const seenUrls = new Set();
   for (const src of sources) {
-    // Extract URLs from known sources
     let url = src;
     if (src.includes('GTABase')) url = 'https://gtabase.com';
     else if (src.includes('PowerPyx')) url = 'https://powerpyx.com';
@@ -182,23 +356,45 @@ function save() {
 
 // ----- event listeners -----
 
-grade.addEventListener('change', renderTable);
-spoiler.addEventListener('change', renderTable);
+grade.addEventListener('change', () => {
+  const view = viewSelect.value;
+  if (view === 'roadmap') renderRoadmap();
+  else if (view === 'missable') renderMissable();
+  else renderTable();
+});
+
+spoiler.addEventListener('change', () => {
+  const view = viewSelect.value;
+  if (view === 'roadmap') renderRoadmap();
+  else if (view === 'missable') renderMissable();
+  else renderTable();
+});
+
 exportBtn.addEventListener('click', () => {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify([...earned])], { type: 'application/json' }));
   a.download = 'trophy-progress.json';
   a.click();
 });
+
 importInput.addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
   earned = new Set(JSON.parse(await file.text()));
   save();
-  renderTable();
+  const view = viewSelect.value;
+  if (view === 'roadmap') renderRoadmap();
+  else if (view === 'missable') renderMissable();
+  else renderTable();
   updateProgress();
 });
-viewSelect.addEventListener('change', renderTable);
+
+viewSelect.addEventListener('change', () => {
+  const view = viewSelect.value;
+  if (view === 'roadmap') renderRoadmap();
+  else if (view === 'missable') renderMissable();
+  else renderTable();
+});
 
 // ----- initial render -----
 
